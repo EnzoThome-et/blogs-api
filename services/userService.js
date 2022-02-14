@@ -1,5 +1,5 @@
 const Joi = require('joi');
-// const { User } = require('../models');
+const { User } = require('../models');
 
 const schema = Joi.object({
     displayName: Joi.string().min(8).required(),
@@ -16,19 +16,27 @@ const response = (status, message) => ({
 const create = async ({ displayName, email, password, image }) => {
     const { error } = schema.validate({ displayName, email, password, image });
 
+    const passwordMessage = '"password" length must be at least 6 characters long';
+
     if (error) {
-        throw response(400, error.message);
+        const result = response(400, error.message);
+        if (result.message === passwordMessage) {
+            result.message = '"password" length must be 6 characters long';
+            return result;
+        }
+        return result;
     }
 
-    // const userExistance = await User.findOne({ where: { email } });
+    const userExistance = await User.findOne({ where: { email } });
 
-    // if (userExistance) {
-    //     throw response(409, 'User already registered');
-    //   }
+    if (userExistance) {
+        const result = response(409, 'User already registered');
+        return result;
+      }
 
-    // const user = await User.create({ displayName, email, password, image });
+    const user = await User.create({ displayName, email, password, image });
 
-    // return user;
+    return user;
 };
 
 module.exports = { create };
