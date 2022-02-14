@@ -4,6 +4,7 @@ require('dotenv').config();
 const app = express();
 
 const userController = require('./controllers/userController');
+const categoriesController = require('./controllers/categoriesController');
 const { verifyToken } = require('./controllers/middlewares/verifyToken');
 
 app.use(express.json());
@@ -17,6 +18,8 @@ app.post('/login', userController.login);
 app.get('/user', verifyToken, userController.getAll);
 
 app.get('/user/:id', verifyToken, userController.getById);
+
+app.post('/categories', verifyToken, categoriesController.create);
 
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (request, response) => {
