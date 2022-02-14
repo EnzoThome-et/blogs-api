@@ -49,7 +49,6 @@ const login = async ({ email, password }) => {
    if (error) return response(400, error.message);
 
    const user = await User.findOne({ where: { email } });
-   console.log(user);
 
    if (user == null) return response(400, 'Invalid fields');
 
@@ -58,8 +57,16 @@ const login = async ({ email, password }) => {
     algorithm: 'HS256',
   };
 
-  const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, jwtConfig);
+  const token = jwt.sign({ data: user }, process.env.JWT_SECRET, jwtConfig);
   return { token };
 };
 
-module.exports = { create, login };
+const getAll = async () => {
+    const users = await User.findAll({
+        attributes: ['id', 'displayName', 'email', 'image'],
+    });
+
+    return users;
+};
+
+module.exports = { create, login, getAll };

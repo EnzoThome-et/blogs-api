@@ -24,4 +24,16 @@ const login = async (req, res) => {
     }
 };
 
-module.exports = { create, login };
+const getAll = async (req, res) => {
+    try {
+        const users = await userService.getAll();
+        if (users.status >= 400) {
+            return res.status(users.status).json({ message: users.message });
+        }
+        return res.status(200).json(users);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = { create, login, getAll };
