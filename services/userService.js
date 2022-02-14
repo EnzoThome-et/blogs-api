@@ -69,4 +69,10 @@ const getAll = async () => {
     return users;
 };
 
-module.exports = { create, login, getAll };
+const getById = async (id) => {
+    const user = await User.findByPk(id);
+    if (!user) return response(404, 'User does not exist');
+    return user;
+};
+
+module.exports = { create, login, getAll, getById };

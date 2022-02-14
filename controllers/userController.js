@@ -24,16 +24,26 @@ const login = async (req, res) => {
     }
 };
 
-const getAll = async (req, res) => {
+const getAll = async (_req, res) => {
     try {
         const users = await userService.getAll();
-        if (users.status >= 400) {
-            return res.status(users.status).json({ message: users.message });
-        }
         return res.status(200).json(users);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
 };
 
-module.exports = { create, login, getAll };
+const getById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const user = await userService.getById(id);
+        if (user.status >= 400) {
+            return res.status(user.status).json({ message: user.message });
+        }
+        return res.status(200).json(user);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = { create, login, getAll, getById };
